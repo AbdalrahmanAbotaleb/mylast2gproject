@@ -31,8 +31,8 @@ class ScanController extends GetxController {
   Future<void> loadModel() async {
     Tflite.close();
     await Tflite.loadModel(
-      model: 'assets/models/model_unquant3.tflite',
-      labels: 'assets/models/labels3.txt',
+      model: 'assets/models/model_unquant.tflite',
+      labels: 'assets/models/labels.txt',
     );
   }
 

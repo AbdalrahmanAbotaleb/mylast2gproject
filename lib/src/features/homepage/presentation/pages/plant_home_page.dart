@@ -1,14 +1,20 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../core/services/NetworkData.dart';
 import '../controllers/plant_controller.dart';
 import 'plant_grid_view.dart';
 
 class PlantHomePage extends StatelessWidget {
-  final PlantController plantController = Get.put(PlantController());
+  final PlantController plantController = Get.put(PlantController(NetworkInfoImpl(Connectivity()))); // Inject NetworkInfoImpl
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+            key: _scaffoldKey,
+
       appBar: AppBar(
           actions: [
             IconButton(
@@ -137,6 +143,26 @@ class PlantHomePage extends StatelessWidget {
     );
   }
 }
+void checkConnectivity(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("No Internet"),
+          content: Text("Please check your internet connection."),
+          actions: <Widget>[
+            MaterialButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
 class CustomTab extends StatelessWidget {
   final String text;

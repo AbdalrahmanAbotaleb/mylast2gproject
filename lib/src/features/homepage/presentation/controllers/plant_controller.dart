@@ -1,25 +1,31 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
+import '../../../../core/services/NetworkData.dart';
 import '../../data/models/plant.dart';
 import '../../domain/repositories/fetch_data.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class PlantController extends GetxController {
   var plants = <Plant>[].obs;
   var searchQuery = ''.obs;
   var isConnected = true.obs;
+  final NetworkInfo _networkInfo; // Inject NetworkInfo dependency
+
+  PlantController(this._networkInfo); // Constructor to inject NetworkInfo
 
   @override
   void onInit() {
     super.onInit();
-    fetchPlants();
-    checkConnectivity();
+    checkConnectivity(); // Start listening for connectivity changes
   }
 
   void checkConnectivity() async {
-    ConnectivityResult result = await Connectivity().checkConnectivity();
-    isConnected.value = result != ConnectivityResult.none;
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    isConnected.value = await _networkInfo.isConnected; // Check initial connectivity status
+
+    _networkInfo.onConnectivityChanged.listen((ConnectivityResult result) {
       isConnected.value = result != ConnectivityResult.none;
+      if (isConnected.value) {
+        fetchPlants(); // If connected, fetch plants automatically
+      }
     });
   }
 
