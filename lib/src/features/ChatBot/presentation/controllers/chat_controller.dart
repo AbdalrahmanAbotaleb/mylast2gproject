@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class ChatController extends GetxController {
   late final GenerativeModel _model;
@@ -16,6 +17,7 @@ class ChatController extends GetxController {
   final ScrollController scrollController = ScrollController();
   RxList<Map<String, dynamic>> chatHistory = <Map<String, dynamic>>[].obs;
   RxString? file = ''.obs;
+  var isOffline = false.obs;
 
   @override
   void onInit() {
@@ -29,6 +31,7 @@ class ChatController extends GetxController {
     );
     _chat = _model.startChat();
     _loadChatHistory();
+    _initConnectivity();
     super.onInit();
   }
 
@@ -41,7 +44,7 @@ class ChatController extends GetxController {
         "isSender": true,
         "isImage": false,
       };
-                        chatController.clear();
+      chatController.clear();
 
       _addMessageToChatHistory(userQuestionData);
 
@@ -59,7 +62,6 @@ class ChatController extends GetxController {
       scrollController.jumpTo(
         scrollController.position.maxScrollExtent,
       );
-
     }
   }
 
@@ -84,7 +86,46 @@ class ChatController extends GetxController {
     }
   }
 
-  // Load chat history from SharedPreferences
+  void _initConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    _updateConnectionStatus(connectivityResult);
+
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      _updateConnectionStatus(result);
+    });
+  }
+
+  void _updateConnectionStatus(ConnectivityResult result) {
+    switch (result) {
+      case ConnectivityResult.wifi:
+      case ConnectivityResult.mobile:
+        isOffline.value = false;
+        break;
+      case ConnectivityResult.none:
+        isOffline.value = true;
+        _showNetworkDialog();
+        break;
+      default:
+        isOffline.value = true;
+        break;
+    }
+  }
+
+  void _showNetworkDialog() {
+    Get.defaultDialog(
+      title: "No Internet Connection",
+      content: Text("Please check your internet connection."),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: Text("OK"),
+        ),
+      ],
+    );
+  }
+
   void _loadChatHistory() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? chatHistoryString = prefs.getString('chat_history');
@@ -94,19 +135,16 @@ class ChatController extends GetxController {
     }
   }
 
-  // Save chat history to SharedPreferences
   void _saveChatHistory() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('chat_history', jsonEncode(chatHistory));
   }
 
-  // Function to add a message to chat history and save it
   void _addMessageToChatHistory(Map<String, dynamic> message) {
     chatHistory.add(message);
     _saveChatHistory();
   }
 
-  // Function to clear chat history
   void clearChat() {
     chatHistory.clear();
     _saveChatHistory();

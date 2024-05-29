@@ -4,6 +4,7 @@ import 'package:mylast2gproject/src/features/ScanningHome/presentation/pages/hom
 import 'package:mylast2gproject/src/features/weatherhome/presentation/pages/welcome.dart';
 // import 'package:mylastgproject/src/features/WeatherHome/presentation/widgets/Weather.dart';
 
+import '../../../homepage/presentation/pages/plant_home_page.dart';
 import '../../../newsField/presentation/pages/News.dart';
 
 class BottomNavBarV2 extends StatefulWidget {
@@ -24,9 +25,9 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
 
   // Define your list of pages here
   List<Widget> pages = [
-    const HomeScreen(),
+    PlantHomePage(),
     NewsField(),
-    ScanPage(),
+   ScanPage(),
     const MainScreen(),
     const HomeBot()
   ];
@@ -143,13 +144,7 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
     );
   }
 
-  static ShoppingScreen() {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Shopping"),
-      ),
-    );
-  }
+  
 }
 
 class BNBCustomPainter extends CustomPainter {
@@ -180,50 +175,7 @@ class BNBCustomPainter extends CustomPainter {
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-      ),
-      body: const Center(
-        child: Text('Home Screen'),
-      ),
-    );
-  }
-}
 
-class BookmarkScreen extends StatelessWidget {
-  const BookmarkScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bookmark'),
-      ),
-      body: const Center(
-        child: Text('Bookmark Screen'),
-      ),
-    );
-  }
-}
 
-class NotificationsScreen extends StatelessWidget {
-  const NotificationsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notifications'),
-      ),
-      body: const Center(
-        child: Text('Notifications Screen'),
-      ),
-    );
-  }
-}

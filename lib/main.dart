@@ -6,6 +6,7 @@ import 'package:mylast2gproject/src/features/weatherhome/presentation/pages/weat
 
 import 'src/features/weatherhome/presentation/pages/welcome.dart';
 
+
 void main() {
   runApp(
     const MyApp(),
@@ -26,7 +27,6 @@ class MyApp extends StatelessWidget {
         // initialRoute: '/main',
       getPages: [
         GetPage(name: '/main', page: () => MainScreen()),
-        GetPage(name: '/weather', page: () => WeatherHomePage()),
       ],
         title: 'PlantDiseasesX',
         theme: ThemeData(

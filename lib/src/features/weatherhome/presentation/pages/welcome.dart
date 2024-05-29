@@ -1,19 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mylast2gproject/src/features/weatherhome/presentation/pages/weatherui.dart';
 
 class MainScreen extends StatelessWidget {
   final Duration duration = const Duration(milliseconds: 800);
 
   const MainScreen({Key? key}) : super(key: key);
-
-  /////////////////////////////////////
-  //@CodeWithFlexz on Instagram
-  //
-  //AmirBayat0 on Github
-  //Programming with Flexz on Youtube
-  /////////////////////////////////////
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +21,6 @@ class MainScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            ///
             FadeInUp(
               duration: duration,
               delay: const Duration(milliseconds: 2000),
@@ -42,13 +35,7 @@ class MainScreen extends StatelessWidget {
                 child: Lottie.asset("assets/images/weatther.json", animate: true),
               ),
             ),
-
-            ///
-            const SizedBox(
-              height: 15,
-            ),
-
-            /// TITLE
+            const SizedBox(height: 15,),
             FadeInUp(
               duration: duration,
               delay: const Duration(milliseconds: 1600),
@@ -60,13 +47,9 @@ class MainScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
             ),
-
-            ///
             const SizedBox(
               height: 10,
             ),
-
-            /// SUBTITLE
             FadeInUp(
               duration: duration,
               delay: const Duration(milliseconds: 1000),
@@ -80,40 +63,30 @@ class MainScreen extends StatelessWidget {
                     fontWeight: FontWeight.w300),
               ),
             ),
-
-            ///
             Expanded(child: Container()),
-
-            /// GOOGLE BTN
             FadeInUp(
-                duration: duration,
-                delay: const Duration(milliseconds: 600),
-                child: SizedBox(
-                  width: 250,
-                  height: 50,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => WeatherHomePage()),
-                        );
-                      },
-                      child: Text(
-                        'Get start',
-                        style: TextStyle(fontSize: 20),
-                      )),
-                )),
-
-            ///
+              duration: duration,
+              delay: const Duration(milliseconds: 600),
+              child: SizedBox(
+                width: 250,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple,
+                  ),
+                  onPressed: () {
+                    Get.to(WeatherHomePage());
+                  },
+                  child: Text(
+                    'Get start',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(
               height: 20,
             ),
-
-            /// GITHUB BTN
-
-            ///
             const SizedBox(
               height: 100,
             ),
@@ -124,59 +97,6 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-class SButton extends StatelessWidget {
-  const SButton({
-    Key? key,
-    required this.size,
-    required this.color,
-    required this.borderColor,
-    required this.img,
-    required this.text,
-    required this.textStyle,
-  }) : super(key: key);
 
-  final Size size;
-  final Color color;
-  final Color borderColor;
-  final String img;
-  final String text;
-  final TextStyle? textStyle;
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: ((context) => const MainScreen()),
-          ),
-        );
-      },
-      child: Container(
-        width: size.width / 1.2,
-        height: size.height / 15,
-        decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: borderColor, width: 1)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              img,
-              height: 40,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              text,
-              style: textStyle,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+

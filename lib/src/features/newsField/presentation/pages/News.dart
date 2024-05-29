@@ -8,6 +8,8 @@ import '../controllers/news_controller.dart';
 import '../widgets/NewsBody.dart';
 
 class NewsField extends StatelessWidget {
+  const NewsField({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final newsController = Get.put(NewsController(networkInfo: NetworkInfoImpl(Connectivity())));
@@ -23,9 +25,13 @@ class NewsField extends StatelessWidget {
         if (newsController.isLoading.value) {
           return _buildShimmerListView();
         } else if (newsController.isOffline.value && newsController.showOfflineMessage.value) {
-          return Center(child: Text('No internet connection.'));
+          _showOfflineDialog(); // Show offline dialog
+          return _buildShimmerListView();
         } else if (newsController.newsList.isEmpty) {
-          return Center(child: Text('No data available'));
+          return RefreshIndicator(
+            onRefresh: newsController.refreshData,
+            child: Center(child: Text('No data available. Swipe down to refresh.')),
+          );
         } else {
           return RefreshIndicator(
             onRefresh: newsController.refreshData,
@@ -82,5 +88,24 @@ class NewsField extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _showOfflineDialog() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Get.dialog(
+        AlertDialog(
+          title: Text('No Internet Connection'),
+          content: Text('Please check your internet connection and try again.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

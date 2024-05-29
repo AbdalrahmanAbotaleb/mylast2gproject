@@ -1,30 +1,48 @@
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mylast2gproject/src/core/services/NetworkData.dart';
-import '../../../newsField/data/models/NewsModel.dart';
+import 'package:mylast2gproject/src/features/newsField/data/models/NewsModel.dart';
 
 class NewsController extends GetxController {
   var newsList = <NewsArticle>[].obs;
   var isLoading = true.obs;
   var isOffline = false.obs;
-  var showOfflineMessage = false.obs;
+  var showOfflineMessage = false.obs; // Expose this variable
+  late final NetworkInfo _networkInfo;
 
-  final NetworkInfo networkInfo;
-
-  NewsController({required this.networkInfo});
+  NewsController({required NetworkInfo networkInfo}) : _networkInfo = networkInfo;
 
   @override
   void onInit() {
-    super.onInit();
     fetchNewsData();
+    _initConnectivity();
+    super.onInit();
+  }
+
+  void _initConnectivity() async {
+    _networkInfo.onConnectivityChanged.listen((ConnectivityResult result) {
+      _updateConnectionStatus(result);
+    });
+    isOffline.value = !(await _networkInfo.isConnected);
+  }
+
+  void _updateConnectionStatus(ConnectivityResult result) {
+    isOffline.value = result == ConnectivityResult.none;
+    if (isOffline.value) {
+      if (isLoading.value) {
+        showOfflineMessage.value = true;
+      }
+    } else {
+      showOfflineMessage.value = false;
+    }
   }
 
   Future<void> fetchNewsData() async {
     isLoading.value = true;
-    isOffline.value = !(await networkInfo.isConnected);
-
     if (!isOffline.value) {
       try {
         final url = Uri.parse('http://plantdiseasexapi.runasp.net/api/NewsArticle');
@@ -45,15 +63,8 @@ class NewsController extends GetxController {
         isLoading.value = false;
       }
     } else {
-      showOfflineMessageAfterDelay();
       isLoading.value = false;
     }
-  }
-
-  Future<void> showOfflineMessageAfterDelay() async {
-    // Show the offline message after a delay
-    await Future.delayed(const Duration(seconds: 2));
-    showOfflineMessage.value = true;
   }
 
   Future<void> refreshData() async {

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import '../../../newsField/data/models/NewsModel.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:mylast2gproject/src/features/newsField/data/models/NewsModel.dart';
+import 'package:shimmer/shimmer.dart';
+
 import '../controllers/news_controller.dart';
 
 class NewsBody extends StatelessWidget {
@@ -14,14 +17,13 @@ class NewsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<NewsController>();
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
         child: GetBuilder<NewsController>(
           builder: (controller) {
-            if (controller.isOffline.value && controller.showOfflineMessage.value) {
-              return _buildOfflineMessage();
-            }
             return controller.isLoading.value
                 ? _buildShimmerBody()
                 : Column(
@@ -65,19 +67,6 @@ class NewsBody extends StatelessWidget {
                     ],
                   );
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOfflineMessage() {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Center(
-        child: Text(
-          'No internet connection. Please check your connection and try again.',
-          style: TextStyle(fontSize: 16, color: Colors.red),
-          textAlign: TextAlign.center,
         ),
       ),
     );
