@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import '../controllers/plant_controller.dart';
 import 'plant_grid_view.dart';
 
-
-
 class PlantHomePage extends StatelessWidget {
   final PlantController plantController = Get.put(PlantController());
 
@@ -28,7 +26,7 @@ class PlantHomePage extends StatelessWidget {
           ],
           elevation: 0,
           title: Image.asset(
-            "assets/glogo.png",
+            "assets/images/glogo.png",
           )),
       body: Column(
         children: [
@@ -53,8 +51,8 @@ class PlantHomePage extends StatelessWidget {
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search by name',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(28)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(28)),
                 prefixIcon: const Icon(Icons.search),
               ),
               onChanged: (query) {
@@ -98,21 +96,37 @@ class PlantHomePage extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        child: TabBarView(
-                          children: [
-                            PlantGridView(plants: plantController.filteredPlants),
-                            PlantGridView(
-                                plants: plantController.vegetables
-                                    .where((plant) => plant.name.toLowerCase().contains(plantController.searchQuery.value.toLowerCase()))
-                                    .toList()),
-                            PlantGridView(
-                                plants: plantController.fruits
-                                    .where((plant) => plant.name.toLowerCase().contains(plantController.searchQuery.value.toLowerCase()))
-                                    .toList()),
-                          ],
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            plantController.fetchPlants();
+                          },
+                          child: TabBarView(
+                            children: [
+                              PlantGridView(
+                                  plants: plantController.filteredPlants),
+                              PlantGridView(
+                                  plants: plantController.vegetables
+                                      .where((plant) => plant.name
+                                          .toLowerCase()
+                                          .contains(plantController
+                                              .searchQuery.value
+                                              .toLowerCase()))
+                                      .toList()),
+                              PlantGridView(
+                                  plants: plantController.fruits
+                                      .where((plant) => plant.name
+                                          .toLowerCase()
+                                          .contains(plantController
+                                              .searchQuery.value
+                                              .toLowerCase()))
+                                      .toList()),
+                            ],
+                          ),
                         ),
                       ),
+                      SizedBox(height: 150,)
                     ],
+                    
                   ),
                 );
               }
