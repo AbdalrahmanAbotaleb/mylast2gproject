@@ -15,7 +15,7 @@ class BottomNavBarV2 extends StatefulWidget {
 }
 
 class _BottomNavBarV2State extends State<BottomNavBarV2> {
-  int currentIndex = 0;
+  int currentIndex = 2;
 
   setBottomBarIndex(index) {
     setState(() {

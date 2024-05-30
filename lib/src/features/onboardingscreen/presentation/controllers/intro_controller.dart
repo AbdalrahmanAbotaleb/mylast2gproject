@@ -7,19 +7,19 @@ class IntroController extends GetxController {
 
   final List<Map<String, dynamic>> pages = [
     {
-      'color': '#59d9a6',
+      'color': '#59d9b1',
       'title': 'Care Your Plant',
       'image': 'assets/images/s10.png',
       'skip': true,
     },
     {
-      'color': '#2dd9a6',
+      'color': '#22DEDB',
       'title': 'Detect Diseases',
       'image': 'assets/images/s12.png',
       'skip': true,
     },
     {
-      'color': '#2db320',
+      'color': '#0EECAC',
       'title': 'Take Experiences',
       'image': 'assets/images/s13.png',
       'skip': false,

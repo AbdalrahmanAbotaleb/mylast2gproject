@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mylast2gproject/src/features/BottomNavBar/presentation/pages/BottomNavHome.dart';
 
 import '../../../../core/theme/theme.dart';
@@ -92,10 +93,12 @@ class BoxColor extends StatelessWidget {
                     const SizedBox(height: 62),
                     Text(
                       title,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: GoogleFonts.aclonica( // You can change 'lato' to any Google Font you prefer
+        textStyle: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
                     ),
                     const SizedBox(height: 16),
                   ],
