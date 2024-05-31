@@ -6,7 +6,7 @@ Future<List<Plant>> fetchPlantsFromApi() async {
   final response = await http.get(Uri.parse('https://plantdiseasexapi.runasp.net/api/Plants'));
 
   if (response.statusCode == 200) {
-    print(response.body);
+    // print(response.body);
     List jsonResponse = json.decode(response.body)['data'];
     return jsonResponse.map((plant) => Plant.fromJson(plant)).toList();
   } else {

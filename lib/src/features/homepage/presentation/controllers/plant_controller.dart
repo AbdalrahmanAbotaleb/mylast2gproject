@@ -31,6 +31,11 @@ class PlantController extends GetxController {
         fetchPlants();
       }
     });
+
+    // إذا كان متصلًا في البداية، جلب البيانات
+    if (isConnected.value) {
+      fetchPlants();
+    }
   }
 
   void fetchPlants() async {
