@@ -6,34 +6,34 @@ import '../controllers/plant_controller.dart';
 import 'plant_grid_view.dart';
 
 class PlantHomePage extends StatelessWidget {
-  final PlantController plantController = Get.put(PlantController(NetworkInfoImpl(Connectivity()))); // Inject NetworkInfoImpl
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final PlantController plantController =
+      Get.put(PlantController(NetworkInfoImpl(Connectivity())));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            key: _scaffoldKey,
-
       appBar: AppBar(
-          actions: [
-            IconButton(
-                icon: const ImageIcon(
-                  AssetImage('assets/images/46-notification.gif'),
-                  size: 40,
-                ),
-                onPressed: () {}),
-            IconButton(
-                icon: const ImageIcon(
-                  AssetImage('assets/images/63-settings.gif'),
-                  size: 40,
-                ),
-                onPressed: () {}),
-          ],
-          elevation: 0,
-          title: Image.asset(
-            "assets/images/glogo.png",
-          )),
+        actions: [
+          IconButton(
+            icon: const ImageIcon(
+              AssetImage('assets/images/46-notification.gif'),
+              size: 40,
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const ImageIcon(
+              AssetImage('assets/images/63-settings.gif'),
+              size: 40,
+            ),
+            onPressed: () {},
+          ),
+        ],
+        elevation: 0,
+        title: Image.asset(
+          "assets/images/glogo.png",
+        ),
+      ),
       body: Column(
         children: [
           Row(
@@ -57,8 +57,8 @@ class PlantHomePage extends StatelessWidget {
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search by name',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(28)),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(28)),
                 prefixIcon: const Icon(Icons.search),
               ),
               onChanged: (query) {
@@ -68,6 +68,12 @@ class PlantHomePage extends StatelessWidget {
           ),
           Expanded(
             child: Obx(() {
+              if (!plantController.isConnected.value) {
+                return Center(
+                  child: Text('No Internet Connection'),
+                );
+              }
+
               if (plantController.plants.isEmpty) {
                 return const Center(child: CircularProgressIndicator());
               } else {
@@ -92,7 +98,8 @@ class PlantHomePage extends StatelessWidget {
                           indicator: BoxDecoration(
                               borderRadius: BorderRadius.circular(28),
                               color: const Color(0xffF2F6EE)),
-                          labelColor: const Color.fromARGB(255, 10, 10, 10),
+                          labelColor:
+                              const Color.fromARGB(255, 10, 10, 10),
                           unselectedLabelColor: Colors.black,
                           tabs: [
                             CustomTab(text: 'Plants'),
@@ -109,7 +116,8 @@ class PlantHomePage extends StatelessWidget {
                           child: TabBarView(
                             children: [
                               PlantGridView(
-                                  plants: plantController.filteredPlants),
+                                  plants:
+                                      plantController.filteredPlants),
                               PlantGridView(
                                   plants: plantController.vegetables
                                       .where((plant) => plant.name
@@ -130,9 +138,8 @@ class PlantHomePage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 150,)
+                      SizedBox(height: 150),
                     ],
-                    
                   ),
                 );
               }
@@ -143,26 +150,6 @@ class PlantHomePage extends StatelessWidget {
     );
   }
 }
-void checkConnectivity(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("No Internet"),
-          content: Text("Please check your internet connection."),
-          actions: <Widget>[
-            MaterialButton(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
 
 class CustomTab extends StatelessWidget {
   final String text;
@@ -173,7 +160,8 @@ class CustomTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tab(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
         ),

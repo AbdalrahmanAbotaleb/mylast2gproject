@@ -8,23 +8,27 @@ class PlantController extends GetxController {
   var plants = <Plant>[].obs;
   var searchQuery = ''.obs;
   var isConnected = true.obs;
-  final NetworkInfo _networkInfo; // Inject NetworkInfo dependency
+  final NetworkInfo _networkInfo;
 
-  PlantController(this._networkInfo); // Constructor to inject NetworkInfo
+  PlantController(this._networkInfo);
 
   @override
   void onInit() {
     super.onInit();
-    checkConnectivity(); // Start listening for connectivity changes
+    checkConnectivity();
   }
 
   void checkConnectivity() async {
-    isConnected.value = await _networkInfo.isConnected; // Check initial connectivity status
+    isConnected.value = await _networkInfo.isConnected;
 
     _networkInfo.onConnectivityChanged.listen((ConnectivityResult result) {
+      bool wasConnected = isConnected.value;
       isConnected.value = result != ConnectivityResult.none;
-      if (isConnected.value) {
-        fetchPlants(); // If connected, fetch plants automatically
+
+      if (wasConnected && !isConnected.value) {
+        Get.snackbar('No Internet', 'Please check your internet connection');
+      } else if (!wasConnected && isConnected.value) {
+        fetchPlants();
       }
     });
   }
@@ -35,7 +39,7 @@ class PlantController extends GetxController {
       return;
     }
     try {
-      var fetchedPlants = await fetchPlantsFromApi(); // Use the renamed function
+      var fetchedPlants = await fetchPlantsFromApi();
       if (fetchedPlants != null) {
         plants.assignAll(fetchedPlants);
       }
@@ -49,9 +53,13 @@ class PlantController extends GetxController {
   }
 
   List<Plant> get filteredPlants => plants
-      .where((plant) => plant.name.toLowerCase().contains(searchQuery.value.toLowerCase()))
+      .where((plant) =>
+          plant.name.toLowerCase().contains(searchQuery.value.toLowerCase()))
       .toList();
 
-  List<Plant> get vegetables => plants.where((plant) => plant.plantCategory == 'Vegetables').toList();
-  List<Plant> get fruits => plants.where((plant) => plant.plantCategory == 'Fruits').toList();
+  List<Plant> get vegetables => plants
+      .where((plant) => plant.plantCategory == 'Vegetables')
+      .toList();
+  List<Plant> get fruits =>
+      plants.where((plant) => plant.plantCategory == 'Fruits').toList();
 }
