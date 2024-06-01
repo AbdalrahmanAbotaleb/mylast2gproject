@@ -7,6 +7,7 @@ import '../controllers/scan_controller.dart';
 class ScanPage extends StatelessWidget {
   final ScanController controller = Get.put(ScanController());
 
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;

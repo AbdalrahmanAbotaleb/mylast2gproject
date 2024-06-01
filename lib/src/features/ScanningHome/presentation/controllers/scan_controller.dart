@@ -10,10 +10,12 @@ class ScanController extends GetxController {
   var _image = Rx<File?>(null);
   var _diagnosisList = <Map<String, dynamic>>[].obs;
   final picker = ImagePicker();
+  bool _isImagePickerActive = false; // Add this variable to track if the image picker is active
 
   bool get loading => _loading.value;
   File? get image => _image.value;
   List<Map<String, dynamic>> get diagnosisList => _diagnosisList;
+
 
   @override
   void onInit() {
@@ -59,14 +61,20 @@ class ScanController extends GetxController {
   }
 
   Future<void> loadImageGallery() async {
+    if (_isImagePickerActive) return; // Check if the image picker is already active
+    _isImagePickerActive = true; // Set image picker as active
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    _isImagePickerActive = false; // Reset image picker status after picking
     if (image != null) {
       await detectImage(image);
     }
   }
 
   Future<void> loadImageCamera() async {
+    if (_isImagePickerActive) return; // Check if the image picker is already active
+    _isImagePickerActive = true; // Set image picker as active
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
+    _isImagePickerActive = false; // Reset image picker status after picking
     if (image != null) {
       await detectImage(image);
     }
@@ -99,7 +107,8 @@ class ScanController extends GetxController {
 
   Future<void> saveDisplayedImage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (_image.value != null) {
+    if (_image.value != null)
+    {
       await prefs.setString('displayedImagePath', _image.value!.path);
     }
   }
