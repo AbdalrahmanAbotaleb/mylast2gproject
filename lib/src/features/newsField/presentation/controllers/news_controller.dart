@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:connectivity_plus/connectivity_plus.dart';
+
 import 'package:mylast2gproject/src/core/services/NetworkData.dart';
 import 'package:mylast2gproject/src/features/newsField/data/models/NewsModel.dart';
 
@@ -11,7 +11,7 @@ class NewsController extends GetxController {
   var newsList = <NewsArticle>[].obs;
   var isLoading = true.obs;
   var isOffline = false.obs;
-  var showOfflineMessage = false.obs; // Expose this variable
+  var showOfflineMessage = false.obs;
   late final NetworkInfo _networkInfo;
 
   NewsController({required NetworkInfo networkInfo}) : _networkInfo = networkInfo;
@@ -31,13 +31,18 @@ class NewsController extends GetxController {
   }
 
   void _updateConnectionStatus(ConnectivityResult result) {
+    bool wasOffline = isOffline.value;
     isOffline.value = result == ConnectivityResult.none;
+    
     if (isOffline.value) {
       if (isLoading.value) {
         showOfflineMessage.value = true;
       }
     } else {
       showOfflineMessage.value = false;
+      if (wasOffline) {
+        fetchNewsData(); // Fetch data when coming back online
+      }
     }
   }
 

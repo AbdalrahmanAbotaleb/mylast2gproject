@@ -24,24 +24,10 @@ class NewsField extends StatelessWidget {
       body: Obx(() {
         if (newsController.isLoading.value) {
           return _buildShimmerListView();
-        } else if (newsController.isOffline.value && newsController.showOfflineMessage.value) {
-          _showOfflineDialog(); // Show offline dialog
-          return _buildShimmerListView();
-        } else if (newsController.newsList.isEmpty) {
-          return RefreshIndicator(
-            onRefresh: newsController.refreshData,
-            child: Center(child: Text('No data available. Swipe down to refresh.')),
-          );
         } else {
           return RefreshIndicator(
             onRefresh: newsController.refreshData,
-            child: ListView.builder(
-              itemCount: newsController.newsList.length,
-              itemBuilder: (context, index) {
-                final article = newsController.newsList[index];
-                return NewsBody(article: article);
-              },
-            ),
+            child: _buildContent(newsController),
           );
         }
       }),
@@ -90,8 +76,52 @@ class NewsField extends StatelessWidget {
     );
   }
 
+  Widget _buildContent(NewsController newsController) {
+    if (newsController.isOffline.value) {
+      return ListView(
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'No internet connection. Swipe down to refresh.',
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          if (newsController.showOfflineMessage.value)
+            _buildShimmerListView(), // Show shimmer while offline and loading
+        ],
+      );
+    } else if (newsController.newsList.isEmpty) {
+      return ListView(
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'No data available. Swipe down to refresh.',
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return ListView.builder(
+        itemCount: newsController.newsList.length,
+        itemBuilder: (context, index) {
+          final article = newsController.newsList[index];
+          return NewsBody(article: article);
+        },
+      );
+    }
+  }
+
   void _showOfflineDialog() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.dialog(
         AlertDialog(
           title: Text('No Internet Connection'),
