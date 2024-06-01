@@ -9,7 +9,7 @@
 
 
     <application
-        android:label="mylast2gproject"
+        android:label="PlantDiseasesX"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         
